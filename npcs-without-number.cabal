@@ -57,7 +57,7 @@ executable npcs-without-number
   -- other-extensions:    
   
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.10 && <4.11
+  build-depends:       base >=4.10 && <4.11, random
   
   -- Directories containing source files.
   hs-source-dirs:      src
