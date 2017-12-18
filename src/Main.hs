@@ -3,14 +3,13 @@ import System.Random
 data Npc = Npc { name :: String,
                    hp :: Int } deriving (Show)
 
-npc :: Int -> Npc
-npc x =
-  Npc "enemy" x
+npc :: String -> Int -> Npc
+npc n x = Npc n x
 
-npcFromType :: Int -> Npc
-npcFromType 0 = Npc "elite fighter" 3
-npcFromType 1 = Npc "basic fighter" 2
-npcFromType x = npc x
+-- hit dice = 6
+npcWithRandomHp 0 g = npc "elite fighter" (sum $ dice 3 6 g)
+npcWithRandomHp 1 g = npc "basic fighter" (sum $ dice 2 6 g)
+npcWithRandomHp x g = npc "enemy" (sum $ dice x 6 g)
 
 -- roll nDx dice
 dice :: (RandomGen g) => Int -> Int -> g -> [Int]
@@ -22,6 +21,5 @@ main = do
   putStrLn ("enter an integer for enemy type")
   input <- getLine
   let x = (read input :: Int)
-  let n = npcFromType x
+  let n = npcWithRandomHp x g
   putStrLn ("NPC: " ++ name n ++ ", hp: " ++ show (hp n ))
-  print $ dice 1 6 g
