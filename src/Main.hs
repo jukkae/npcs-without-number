@@ -38,13 +38,12 @@ dice n x = take n . randomRs (1, x)
 
 main :: IO ()
 main = do
-  g <- newStdGen -- seed random generator
   putStrLn ("How many enemies do you want?")
   input <- getLine
   let n = (read input :: Int)
   putStrLn ("Enter an integer for enemy type [0-2]")
   input <- getLine
   let x = (read input :: Int)
-  replicateM_ n $ putStrLn (show (npcWithRandomHp x g))
-  --let n = npcWithRandomHp x g
-  --putStrLn (show n)
+  replicateM_ n $ do
+    enemy <- liftM (npcWithRandomHp x) newStdGen
+    putStrLn $ (show (enemy))
