@@ -1,15 +1,36 @@
 import System.Random
+import Control.Monad
 
-data Npc = Npc { name :: String,
-                   hp :: Int } deriving (Show)
+data Npc = Npc {   kind :: String
+               ,     hp :: Int
+               ,     ac :: Int
+               ,    atk :: Int
+               ,    dmg :: Int
+               ,   move :: Int
+               , morale :: Int
+               , skills :: Int
+               ,  saves :: Int }
 
-npc :: String -> Int -> Npc
+npc :: String -> Int -> Int -> Int -> Int -> Int -> Int -> Int -> Int -> Npc
 npc n x = Npc n x
 
+showNpc :: Npc -> String
+showNpc (Npc a b c d e f g h i) = "NPC: " ++ a
+              ++ ", hp: " ++ show (b)
+              ++ ", ac: " ++ show (c)
+              ++ ", atk: +" ++ show (d)
+              ++ ", dmg: " ++ show (e)
+              ++ ", move: " ++ show (f) ++ "m"
+              ++ ", morale: " ++ show (g)
+              ++ ", skills: +" ++ show (h)
+              ++ ", saves: " ++ show (i) ++ "+"
+
+instance Show Npc where show = showNpc
+
 -- hit dice = 6
-npcWithRandomHp 0 g = npc "elite fighter" (sum $ dice 3 6 g)
-npcWithRandomHp 1 g = npc "basic fighter" (sum $ dice 2 6 g)
-npcWithRandomHp x g = npc "enemy" (sum $ dice x 6 g)
+npcWithRandomHp 0 g = npc "elite fighter" (sum $ dice 3 6 g) 16 4 9 10 10 2 14
+npcWithRandomHp 1 g = npc "basic fighter" (sum $ dice 2 6 g) 14 2 6 10 9  1 14
+npcWithRandomHp x g = npc "enemy"         (sum $ dice x 6 g) 10 0 3 10 8  1 15
 
 -- roll nDx dice
 dice :: (RandomGen g) => Int -> Int -> g -> [Int]
@@ -18,8 +39,12 @@ dice n x = take n . randomRs (1, x)
 main :: IO ()
 main = do
   g <- newStdGen -- seed random generator
-  putStrLn ("enter an integer for enemy type")
+  putStrLn ("How many enemies do you want?")
+  input <- getLine
+  let n = (read input :: Int)
+  putStrLn ("Enter an integer for enemy type [0-2]")
   input <- getLine
   let x = (read input :: Int)
-  let n = npcWithRandomHp x g
-  putStrLn ("NPC: " ++ name n ++ ", hp: " ++ show (hp n ))
+  replicateM_ n $ putStrLn (show (npcWithRandomHp x g))
+  --let n = npcWithRandomHp x g
+  --putStrLn (show n)
